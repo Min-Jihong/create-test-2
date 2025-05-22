@@ -1,0 +1,35 @@
+name: Create Next.js Project
+
+on:
+  workflow_dispatch:
+    inputs:
+      projectName:
+        description: 'Name of the Next.js project'
+        required: true
+        type: string
+
+jobs:
+  create-next-app:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      - name: Create Next.js Project
+        run: |
+          npx create-next-app@latest "${github.event.inputs.projectName}" --typescript --tailwind --eslint --src-dir --app --import-alias "@/*"
+          
+      - name: Configure Git
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          
+      - name: Commit and Push Changes
+        run: |
+          git add .
+          git commit -m "Initialize Next.js project"
+          git push
